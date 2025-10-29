@@ -1,0 +1,24 @@
+*   {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: black;
+}
+
+#canvas1{
+    border: 5px solid black;
+    position: absolute;
+    background-color: white;
+    background-image: url("assets/background.jpg");
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    max-width: 100%;
+    max-height: 100%;
+
+}
+
+#player{
+    display: none;
+}
