@@ -5,10 +5,10 @@ export class Player {
         this.game = game;
         this.width = 148;
         this.height = 141;
-        this.hitboxWidth = 100;
-        this.hitboxHeight = 60;   
-        this.hitboxOffsetX = 24;  
-        this.hitboxOffsetY = 30;
+        this.hitboxWidth = 120;
+        this.hitboxHeight = 40;   
+        this.hitboxOffsetX = 14;  
+        this.hitboxOffsetY = 50;
 
 
         this.x = 0;
