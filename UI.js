@@ -17,8 +17,9 @@ export class UI{
             context.textAlign = 'center';
             context.font = '40px ' + this.fontFamily;
             context.fillText('Press ENTER to Start', this.game.width / 2, this.game.height / 2);
+            
             context.font = '20px ' + this.fontFamily;
-            context.fillText('Use Arrow Keys to move · Avoid the pillars!', this.game.width / 2, this.game.height / 2 + 40);
+            context.fillText('Use Arrow Keys to move Juni the Shark · Avoid the pillars!', this.game.width / 2, this.game.height / 2 + 40);
         }
 
         // Gameover

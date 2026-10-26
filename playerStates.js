@@ -20,7 +20,7 @@ export class Idle extends State {
         this.player.maxFrame = 3;
     }
     handleInput(input) {
-        // Any arrow key pressed → start running
+        // Any arrow key pressed = start running
         if (input.includes('ArrowLeft') ||
             input.includes('ArrowRight') ||
             input.includes('ArrowUp') ||
@@ -41,7 +41,7 @@ export class Running extends State {
         this.player.maxFrame = 3;
     }
     handleInput(input) {
-        // No movement keys → go back to idle
+        // No movement keys = go back to idle
         if (!input.includes('ArrowLeft') &&
             !input.includes('ArrowRight') &&
             !input.includes('ArrowUp') &&

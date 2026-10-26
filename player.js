@@ -68,12 +68,11 @@ export class Player {
         if (this.y < 0) this.y = 0;
         if (this.y > this.game.height - this.height) this.y = this.game.height - this.height;
 
-        // ===== ROTATION =====
-        // Starts looking right (angle = 0)
-        // Up (including diagonals) → 45° counter-clockwise
-        // Down (including diagonals) → 45° clockwise
+        // ROTATION
+        // Starts looking right angle = 0
         if (input.includes('ArrowUp')) {
             this.angle = -Math.PI / 4;   // -45 degrees
+            
         } else if (input.includes('ArrowDown')) {
             this.angle = Math.PI / 4;    // +45 degrees
         } else {
@@ -91,16 +90,36 @@ export class Player {
     }
 
     draw(context) {
-        if(this.game.debug){
-            context.strokeRect(
-                this.x + this.hitboxOffsetX,
-                this.y + this.hitboxOffsetY,
-                this.hitboxWidth,
-                this.hitboxHeight
-            );
-        }
+        if (this.game.debug) {
+        // Draw the rotated hitbox outline
+        const cx = this.x + this.hitboxOffsetX + this.hitboxWidth / 2;
+        const cy = this.y + this.hitboxOffsetY + this.hitboxHeight / 2;
+        const hw = this.hitboxWidth / 2;
+        const hh = this.hitboxHeight / 2;
+        const cos = Math.cos(this.angle);
+        const sin = Math.sin(this.angle);
+
+        context.save();
+        context.strokeStyle = 'red';
+        context.beginPath();
+        const corners = [
+            { x: -hw, y: -hh },
+            { x:  hw, y: -hh },
+            { x:  hw, y:  hh },
+            { x: -hw, y:  hh }
+        ];
+        corners.forEach((c, i) => {
+            const px = cx + (c.x * cos - c.y * sin);
+            const py = cy + (c.x * sin + c.y * cos);
+            if (i === 0) context.moveTo(px, py);
+            else context.lineTo(px, py);
+        });
+        context.closePath();
+        context.stroke();
+        context.restore();
+    }
         
-        // THIS is the part that actually rotates the character
+        // part that actually rotates the character
         context.save();
         context.translate(this.x + this.width / 2, this.y + this.height / 2);
         context.rotate(this.angle);
@@ -125,18 +144,48 @@ export class Player {
     }
 
     checkCollision(){
-        this.game.enemies.forEach(enemy=>{
-            if(
-                enemy.x < this.x + this.hitboxOffsetX + this.hitboxWidth &&
-                enemy.x + enemy.width > this.x + this.hitboxOffsetX &&
-                enemy.y < this.y + this.hitboxOffsetY + this.hitboxHeight &&
-                enemy.y + enemy.height > this.y + this.hitboxOffsetY
-            ){//for collision
-                enemy.markedForDeletion=true;
-                this.game.setGameOver();
-            }else{
+    // Center of the *hitbox*, not the whole sprite
+    const cx = this.x + this.hitboxOffsetX + this.hitboxWidth / 2;
+    const cy = this.y + this.hitboxOffsetY + this.hitboxHeight / 2;
 
-            }
-        });
-    }
+    const hw = this.hitboxWidth / 2;
+    const hh = this.hitboxHeight / 2;
+
+    const cos = Math.cos(this.angle);
+    const sin = Math.sin(this.angle);
+
+    this.game.enemies.forEach(enemy => {
+        const ex = enemy.x + enemy.width / 2;
+        const ey = enemy.y + enemy.height / 2;
+        const ehw = enemy.width / 2;
+        const ehh = enemy.height / 2;
+
+        const dx = ex - cx;
+        const dy = ey - cy;
+
+        // player's local X
+        const dist1 = Math.abs(dx * cos + dy * sin);
+        const proj1 = hw + ehw * Math.abs(cos) + ehh * Math.abs(sin);
+        if (dist1 > proj1) return;
+
+        // player's local Y
+        const dist2 = Math.abs(-dx * sin + dy * cos);
+        const proj2 = hh + ehw * Math.abs(sin) + ehh * Math.abs(cos);
+        if (dist2 > proj2) return;
+
+        // World X
+        const distX = Math.abs(dx);
+        const projX = ehw + hw * Math.abs(cos) + hh * Math.abs(sin);
+        if (distX > projX) return;
+
+        // World Y
+        const distY = Math.abs(dy);
+        const projY = ehh + hw * Math.abs(sin) + hh * Math.abs(cos);
+        if (distY > projY) return;
+
+        // Real overlap = die
+        enemy.markedForDeletion = true;
+        this.game.setGameOver();
+    });
+}
 }

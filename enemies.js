@@ -50,7 +50,7 @@ export class PillarEnemy extends Enemy{//child class
     constructor(game,isTop,gapY,gapSize){
         super();//calling code from constructor
         this.game=game;
-        this.width=91;
+        this.width=81;
         this.height=233;
         this.x=this.game.width;
         this.speedX=2;
